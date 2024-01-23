@@ -9,10 +9,13 @@ from .ReadQR.qr import decodeQR
 def api_home(req):
     if 'file' in req.data:
         file = req.data['file']
-        img = ImageUpload.objects.create(image=file)
-        return Response(readqr(img))
+        try:
+            img = ImageUpload.objects.create(image=file)
+            return Response(readqr(img))
+        except ValueError:
+            return Response(data={"message": "No file Provided"})
     else:
-        return Response(data={"message", "upload image with key 'file'"})
+        return Response(data={"message": "upload image with key 'file'"})
 
 def readqr(img: ImageUpload):
     print(img.image.path)
